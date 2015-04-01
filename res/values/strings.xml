@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MovieUp\nPlayer</string>
+    <string name="ok">OK</string>
+    <string name="alert">This App can\'t run alone.\nPlease play through related route</string>
+    <string name="question">What is your question?</string>
+    <string name="username">Name or E-mail</string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
+
+</resources>
