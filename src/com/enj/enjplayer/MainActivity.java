@@ -754,12 +754,12 @@ public class MainActivity extends Activity implements Callback,
 			if (mMediaPlayer.isPlaying()) {
 				hoverImageView.setVisibility(View.GONE);
 
-				Log.i("updateThread >>> ",
-						mMediaPlayer.getCurrentPosition()
-								+ "|"
-								+ old_position
-								+ "|"
-								+ (mMediaPlayer.getCurrentPosition() - old_position));
+//				Log.i("updateThread >>> ",
+//						mMediaPlayer.getCurrentPosition()
+//								+ "|"
+//								+ old_position
+//								+ "|"
+//								+ (mMediaPlayer.getCurrentPosition() - old_position));
 
 				if (mMediaPlayer.getCurrentPosition() > old_position) {
 
