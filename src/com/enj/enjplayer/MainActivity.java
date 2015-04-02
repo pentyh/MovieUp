@@ -36,14 +36,12 @@ import android.provider.Settings.System;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.SurfaceHolder.Callback;
 import android.view.WindowManager.LayoutParams;
@@ -52,8 +50,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -71,7 +69,6 @@ public class MainActivity extends Activity implements Callback,
 
 	private static int old_position = 0;
 	private static boolean isSeek = false;
-	private PopupWindow mPopupWindow;
 
 	SurfaceView mSurfaceView;
 	SurfaceHolder holder;
@@ -84,6 +81,8 @@ public class MainActivity extends Activity implements Callback,
 	ProgressBar loadingBar;
 	ImageView hoverImageView;
 	String imageUrl = null;
+
+	RelativeLayout overLay;
 
 	DisplayMetrics metrics;
 
@@ -119,7 +118,6 @@ public class MainActivity extends Activity implements Callback,
 	long oldTime = 0;
 
 	FrameLayout.LayoutParams lp;
-	View popupWindow;
 
 	EnjCert m_ec;
 
@@ -130,75 +128,19 @@ public class MainActivity extends Activity implements Callback,
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		popupWindow = LayoutInflater.from(this).inflate(R.layout.overlay, null);
-		popupWindow.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-
-				if ((arg1.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-
-					if ((java.lang.System.currentTimeMillis() - oldTime) < 300) {
-
-						handler.removeCallbacks(showRunnable);
-
-						if (mMediaPlayer != null) {
-
-							if (mMediaPlayer.isPlaying()) {
-								mMediaPlayer.pause();
-							} else {
-								playVideo();
-							}
-
-							mPlayButton.setChecked(!mMediaPlayer.isPlaying());
-						}
-
-						oldTime = 0;
-
-						return true;
-					}
-
-					oldTime = new Date().getTime();
-
-					handler.postDelayed(showRunnable, 300);
-
-				}
-				return false;
-			}
-		});
-
 		metrics = this.getResources().getDisplayMetrics();
-
-		seek_brightness = (SeekBar) popupWindow
-				.findViewById(R.id.player_overlay_brightness);
-		seek_brightness.setRotation(-90.0f);
-
-		seek_volume = (SeekBar) popupWindow
-				.findViewById(R.id.player_overlay_volume);
-		seek_volume.setRotation(-90.0f);
-
-		currentTime = (TextView) popupWindow
-				.findViewById(R.id.player_overlay_currenttime);
-		seek = (SeekBar) popupWindow.findViewById(R.id.player_overlay_seek);
-		seek.setOnSeekBarChangeListener(this);
-		duration = (TextView) popupWindow
-				.findViewById(R.id.player_overlay_duration);
 
 		Log.i("VERSION", Build.VERSION.SDK_INT + "");
 
-		loadingBar = (ProgressBar) findViewById(R.id.player_overlay_loading);
-		hoverImageView = (ImageView) findViewById(R.id.hover);
-
-		m_ec = new EnjCert();
-
-		m_ec.setOnCertCompleteListener(this);// 인증 결과에 대한 이벤트를 수신하기 위해서 리스너 설정
+		init();
 
 		Intent intent = getIntent();
 		if (Intent.ACTION_VIEW.equals(intent.getAction())) {
 
 			Log.i("intent.getDataString", intent.getDataString());
-
 			String scheme = intent.getData().getScheme();
+			Log.i("Scheme", scheme);
+
 			boolean ssl = false;
 			if (scheme.equals("sftask-streamssl") || scheme.equals("https")
 					|| scheme.equals("enjps")) {
@@ -225,8 +167,32 @@ public class MainActivity extends Activity implements Callback,
 
 		} else {
 
-			showCloseDialog();
+			// showCloseDialog();
 		}
+
+	}
+
+	private void init() {
+
+		overLay = (RelativeLayout) findViewById(R.id.overlay);
+
+		seek_brightness = (SeekBar) findViewById(R.id.player_overlay_brightness);
+		seek_brightness.setRotation(-90.0f);
+
+		seek_volume = (SeekBar) findViewById(R.id.player_overlay_volume);
+		seek_volume.setRotation(-90.0f);
+
+		currentTime = (TextView) findViewById(R.id.player_overlay_currenttime);
+		seek = (SeekBar) findViewById(R.id.player_overlay_seek);
+		seek.setOnSeekBarChangeListener(this);
+		duration = (TextView) findViewById(R.id.player_overlay_duration);
+
+		loadingBar = (ProgressBar) findViewById(R.id.player_overlay_loading);
+		hoverImageView = (ImageView) findViewById(R.id.hover);
+
+		m_ec = new EnjCert();
+
+		m_ec.setOnCertCompleteListener(this);// 인증 결과에 대한 이벤트를 수신하기 위해서 리스너 설정
 
 		mSurfaceView = (SurfaceView) findViewById(R.id.videoview);
 		// mSurfaceView.setZOrderOnTop(true);
@@ -238,15 +204,13 @@ public class MainActivity extends Activity implements Callback,
 		/*
 		 * 재생 버튼
 		 */
-		mPlayButton = (ToggleButton) popupWindow
-				.findViewById(R.id.player_overlay_play);
+		mPlayButton = (ToggleButton) findViewById(R.id.player_overlay_play);
 		mPlayButton.setOnCheckedChangeListener(this);
 
 		/*
 		 * 전체화면 버튼
 		 */
-		ToggleButton mToggleButton2 = (ToggleButton) popupWindow
-				.findViewById(R.id.player_overlay_fix);
+		ToggleButton mToggleButton2 = (ToggleButton) findViewById(R.id.player_overlay_fix);
 		mToggleButton2.setOnCheckedChangeListener(this);
 
 		/*
@@ -276,15 +240,15 @@ public class MainActivity extends Activity implements Callback,
 	public void onOnCertComplete() {
 
 		authid = m_ec.GetAuthID();
-		Log.i("authid----", authid);
+		Log.i("authID ---", authid);
+		Log.i("tempUrl ---", uri.toString());
 
 		if (imageUrl != null) {
+			mHandler.sendMessage(mHandler.obtainMessage(2, View.VISIBLE));
 			new Thread(mRunnable).start();
 		} else {
 			playVideo();
 		}
-
-		Log.i("enjsoft", uri.toString());
 
 	};
 
@@ -310,7 +274,7 @@ public class MainActivity extends Activity implements Callback,
 
 			}
 
-			Log.i("imageUrl------", imageUrl);
+			Log.i("imageUrl ---", imageUrl);
 
 			URL myFileUrl = null;
 			Bitmap bitmap = null;
@@ -346,12 +310,16 @@ public class MainActivity extends Activity implements Callback,
 			if (msg.what == 1) {
 				showComfirmDialog();
 				return;
-			}
+			} else if (msg.what == 2) {
 
-			loadingBar.setVisibility(View.GONE);
-			hoverImageView.setImageBitmap((Bitmap) msg.obj);
-			hoverImageView.setVisibility(View.VISIBLE);
-			getPopupWindowInstance();
+				loadingBar.setVisibility((Integer) msg.obj);
+			} else {
+
+				loadingBar.setVisibility(View.GONE);
+				hoverImageView.setImageBitmap((Bitmap) msg.obj);
+				hoverImageView.setVisibility(View.VISIBLE);
+				overLay.setVisibility(View.VISIBLE);
+			}
 
 		};
 	};
@@ -754,12 +722,12 @@ public class MainActivity extends Activity implements Callback,
 			if (mMediaPlayer.isPlaying()) {
 				hoverImageView.setVisibility(View.GONE);
 
-//				Log.i("updateThread >>> ",
-//						mMediaPlayer.getCurrentPosition()
-//								+ "|"
-//								+ old_position
-//								+ "|"
-//								+ (mMediaPlayer.getCurrentPosition() - old_position));
+				// Log.i("updateThread >>> ",
+				// mMediaPlayer.getCurrentPosition()
+				// + "|"
+				// + old_position
+				// + "|"
+				// + (mMediaPlayer.getCurrentPosition() - old_position));
 
 				if (mMediaPlayer.getCurrentPosition() > old_position) {
 
@@ -793,35 +761,23 @@ public class MainActivity extends Activity implements Callback,
 
 		public void run() {
 
-			getPopupWindowInstance();
+			if (overLay.getVisibility() == View.VISIBLE) {
+
+				overLay.setVisibility(View.GONE);
+			} else {
+
+				if (mMediaPlayer != null) {
+					mPlayButton.setChecked(!mMediaPlayer.isPlaying());
+				}
+
+				overLay.setVisibility(View.VISIBLE);
+			}
+
+			seek_brightness.setVisibility(View.INVISIBLE);
+			seek_volume.setVisibility(View.INVISIBLE);
 
 		}
 	};
-
-	/*
-	 * PopupWindow
-	 */
-	private void getPopupWindowInstance() {
-
-		if (mPopupWindow != null && mPopupWindow.isShowing()) {
-
-			mPopupWindow.dismiss();
-		} else {
-
-			metrics = this.getResources().getDisplayMetrics();
-			mPopupWindow = new PopupWindow(popupWindow, metrics.widthPixels,
-					metrics.heightPixels);
-			mPopupWindow.showAtLocation(mSurfaceView, Gravity.CENTER, 0, 0);
-			if (mMediaPlayer != null) {
-				mPlayButton.setChecked(!mMediaPlayer.isPlaying());
-			}
-
-		}
-
-		seek_brightness.setVisibility(View.INVISIBLE);
-		seek_volume.setVisibility(View.INVISIBLE);
-
-	}
 
 	/**
 	 * 두손 간격
@@ -892,7 +848,11 @@ public class MainActivity extends Activity implements Callback,
 
 			if (mMediaPlayer == null) {
 
-				loadingBar.setVisibility(View.VISIBLE);
+				if (uri == null)
+					return;
+
+				mHandler.sendMessage(mHandler.obtainMessage(2, View.VISIBLE));
+
 				if (!uri.getLastPathSegment().equals("playlist.m3u8")) {
 					uri = Uri.parse(uri.toString() + "/playlist.m3u8");
 				}
@@ -910,7 +870,7 @@ public class MainActivity extends Activity implements Callback,
 				uri = Uri.parse(uri.toString() + "?selfcert=" + authid
 						+ "&key=" + key);
 
-				Log.i("uri----", uri.toString());
+				Log.i("videoUrl ---", uri.toString());
 
 				new Thread(new Runnable() {
 
@@ -938,7 +898,8 @@ public class MainActivity extends Activity implements Callback,
 			}
 
 		} catch (Exception e) {
-			Log.e(TAG, "error: " + e.getMessage(), e);
+			e.printStackTrace();
+			// Log.e(TAG, "error: " + e.getMessage(), e);
 		}
 	}
 
@@ -1360,10 +1321,10 @@ public class MainActivity extends Activity implements Callback,
 
 									InputStream inStream = httpURLConnection
 											.getInputStream();
+									inStream.close();
 									dialog.dismiss();
 									mHandler.sendEmptyMessage(1);
 								} catch (Exception e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 
@@ -1419,10 +1380,6 @@ public class MainActivity extends Activity implements Callback,
 		mSurfaceView.setTranslationX(0);
 		mSurfaceView.setTranslationY(0);
 
-		if (mPopupWindow != null) {
-			mPopupWindow.dismiss();
-		}
-
 		if (mVideoWidth == 0)
 			return;
 
@@ -1472,10 +1429,6 @@ public class MainActivity extends Activity implements Callback,
 		super.onDestroy();
 		handler.removeCallbacks(updateThread);
 		handler.removeCallbacks(showRunnable);
-
-		if (mPopupWindow != null) {
-			mPopupWindow.dismiss();
-		}
 
 		if (mMediaPlayer != null) {
 			mMediaPlayer.pause();

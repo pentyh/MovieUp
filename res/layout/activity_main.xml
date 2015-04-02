@@ -36,7 +36,8 @@
         android:layout_gravity="center"
         android:indeterminateBehavior="repeat"
         android:indeterminateDrawable="@drawable/progressbg"
-        android:indeterminateOnly="true" />
+        android:indeterminateOnly="true"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/alert_b"
@@ -45,7 +46,8 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="100dp"
         android:drawableLeft="@drawable/ic_alert_b"
-        android:gravity="center"
+        android:drawablePadding="@dimen/drawPadding"
+        android:gravity="right"
         android:textSize="30sp"
         android:visibility="gone" />
 
@@ -56,6 +58,7 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="100dp"
         android:drawableLeft="@drawable/ic_alert_v"
+        android:drawablePadding="@dimen/drawPadding"
         android:gravity="center"
         android:textSize="30sp"
         android:visibility="gone" />
@@ -67,9 +70,17 @@
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="100dp"
         android:drawableLeft="@drawable/ic_alert_v0"
+        android:drawablePadding="@dimen/drawPadding"
         android:gravity="center"
         android:text="0"
         android:textSize="30sp"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/overlay"
         android:visibility="gone" />
 
 </FrameLayout>
