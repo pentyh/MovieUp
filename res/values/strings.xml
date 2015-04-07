@@ -9,5 +9,8 @@
     <string name="message">Message</string>
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
+    <string name="title_activity_download">DownloadActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_interanet">InteranetActivity</string>
 
 </resources>

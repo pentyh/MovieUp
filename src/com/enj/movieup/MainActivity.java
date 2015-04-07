@@ -1,4 +1,4 @@
-package com.enj.enjplayer;
+package com.enj.movieup;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,6 +9,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
 
+import com.enj.common.ENJValues;
+import com.enj.movieup.R;
 import com.enjsoft.util.EnjCert;
 import com.enjsoft.util.EnjCert.OnCertCompleteListener;
 
@@ -141,6 +143,18 @@ public class MainActivity extends Activity implements Callback,
 			String scheme = intent.getData().getScheme();
 			Log.i("Scheme", scheme);
 
+			if(scheme.equals(ENJValues.SCHEME_ENJ) ){
+				
+				String type = intent.getData().getQueryParameter("type");
+				if(type != null && type.equals("download")){
+					
+					Intent newIntent = new Intent();
+					newIntent.setClass(this, DownloadActivity.class);
+					startActivity(newIntent);
+					return;
+				}
+			}
+			
 			boolean ssl = false;
 			if (scheme.equals("sftask-streamssl") || scheme.equals("https")
 					|| scheme.equals("enjps")) {
@@ -876,8 +890,16 @@ public class MainActivity extends Activity implements Callback,
 
 					@Override
 					public void run() {
+						
+						
 						mMediaPlayer = MediaPlayer.create(MainActivity.this,
 								uri, holder);
+						
+						if(mMediaPlayer == null){
+							finish();
+							return;
+						}
+						
 						mMediaPlayer
 								.setAudioStreamType(AudioManager.STREAM_MUSIC);
 						mMediaPlayer
@@ -899,7 +921,7 @@ public class MainActivity extends Activity implements Callback,
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			// Log.e(TAG, "error: " + e.getMessage(), e);
+			 Log.e(TAG, "error: " + e.getMessage(), e);
 		}
 	}
 

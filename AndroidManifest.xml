@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.enj.enjplayer"
+    package="com.enj.movieup"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.enj.movieup.MainActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
@@ -81,6 +81,14 @@
                 <data android:scheme="sftask-stream" />
                 <data android:scheme="sftask-streamssl" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.enj.movieup.DownloadActivity"
+            android:label="@string/title_activity_download" >
+        </activity>
+        <activity
+            android:name="com.enj.movieup.InteranetActivity"
+            android:label="@string/title_activity_interanet" >
         </activity>
     </application>
 
