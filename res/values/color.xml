@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- common -->
     <color name="red">#FF0000</color>
     <color name="blue">#0000FF</color>
+
+    <!-- bg -->
+    <color name="bg_meun">#28303A</color>
+    <color name="bg">#29303B</color>
 
 </resources>

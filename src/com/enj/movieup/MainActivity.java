@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
 
+import com.enj.common.ENJApplication;
 import com.enj.common.ENJValues;
 import com.enj.movieup.R;
 import com.enjsoft.util.EnjCert;
@@ -128,6 +129,9 @@ public class MainActivity extends Activity implements Callback,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// Application init
+		((ENJApplication) getApplication()).init();
+
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		metrics = this.getResources().getDisplayMetrics();
@@ -143,18 +147,23 @@ public class MainActivity extends Activity implements Callback,
 			String scheme = intent.getData().getScheme();
 			Log.i("Scheme", scheme);
 
-			if(scheme.equals(ENJValues.SCHEME_ENJ) ){
-				
+			if (scheme.equals(ENJValues.SCHEME_ENJ)) {
+
 				String type = intent.getData().getQueryParameter("type");
-				if(type != null && type.equals("download")){
-					
-					Intent newIntent = new Intent();
-					newIntent.setClass(this, DownloadActivity.class);
-					startActivity(newIntent);
+				if (type != null && type.equals("download")) {
+
+					intent.setClass(this, DownloadActivity.class);
+					startActivity(intent);
+
+					// Intent newIntent = new Intent();
+					// newIntent.setClass(this, DownloadActivity.class);
+					// startActivity(newIntent);
+
+					finish();
 					return;
 				}
 			}
-			
+
 			boolean ssl = false;
 			if (scheme.equals("sftask-streamssl") || scheme.equals("https")
 					|| scheme.equals("enjps")) {
@@ -182,6 +191,12 @@ public class MainActivity extends Activity implements Callback,
 		} else {
 
 			// showCloseDialog();
+
+			Intent newIntent = new Intent();
+			newIntent.setClass(this, MenuActivity.class);
+			startActivity(newIntent);
+
+			finish();
 		}
 
 	}
@@ -890,16 +905,15 @@ public class MainActivity extends Activity implements Callback,
 
 					@Override
 					public void run() {
-						
-						
+
 						mMediaPlayer = MediaPlayer.create(MainActivity.this,
 								uri, holder);
-						
-						if(mMediaPlayer == null){
+
+						if (mMediaPlayer == null) {
 							finish();
 							return;
 						}
-						
+
 						mMediaPlayer
 								.setAudioStreamType(AudioManager.STREAM_MUSIC);
 						mMediaPlayer
@@ -921,7 +935,7 @@ public class MainActivity extends Activity implements Callback,
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			 Log.e(TAG, "error: " + e.getMessage(), e);
+			Log.e(TAG, "error: " + e.getMessage(), e);
 		}
 	}
 
@@ -1447,8 +1461,17 @@ public class MainActivity extends Activity implements Callback,
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		ENJApplication.pushActivity(this);
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+
+		ENJApplication.removeActivity(this);
+
 		handler.removeCallbacks(updateThread);
 		handler.removeCallbacks(showRunnable);
 

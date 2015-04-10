@@ -6,11 +6,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.enj.movieup.R;
 
-public class InteranetActivity extends Activity {
+public class IntranetActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_interanet);
+		setContentView(R.layout.activity_intranet);
 	}
 }

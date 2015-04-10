@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:padding="@dimen/activity_vertical_margin"
+    tools:context="com.enj.movieup.MenuActivity" >
+
+    <ImageView
+        android:id="@+id/aaa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_menu_logo_top" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/drawPadding" >
+
+            <Button
+                android:id="@+id/menu_intranet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/drawPadding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_menu_intranet"
+                android:onClick="onClick" />
+
+            <Button
+                android:id="@+id/menu_download"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/drawPadding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_menu_download"
+                android:onClick="onClick" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/drawPadding" >
+
+            <Button
+                android:id="@+id/menu_favorites"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/drawPadding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_menu_favorites"
+                android:onClick="onClick" />
+
+            <Button
+                android:id="@+id/menu_setting"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/drawPadding"
+                android:layout_weight="1"
+                android:background="@drawable/selector_menu_setting"
+                android:onClick="onClick" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_menu_logo_bottom" />
+
+</RelativeLayout>
