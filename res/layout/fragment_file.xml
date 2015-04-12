@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_list_file_menu_bg"
+        android:padding="@dimen/drawPadding" >
+
+        <Button
+            android:id="@+id/list_file_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list_file_all"
+            android:onClick="onClick" />
+
+        <Button
+            android:id="@+id/list_file_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/drawPadding"
+            android:layout_toRightOf="@+id/list_file_all"
+            android:background="@drawable/selector_list_file_play"
+            android:onClick="onClick" />
+
+        <Button
+            android:id="@+id/list_file_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_list_file_open"
+            android:onClick="onClick" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@null"
+        android:focusableInTouchMode="true"
+        android:listSelector="@drawable/list_selector"
+        android:scrollbars="none" />
+
+</LinearLayout>

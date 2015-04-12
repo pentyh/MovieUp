@@ -188,6 +188,9 @@ public class MainActivity extends Activity implements Callback,
 
 			m_ec.Open(ssl, uri.getHost(), uri.getPort());
 
+		} else if (intent.getAction().equals(ENJValues.SCHEME_ENJ)) {
+
+			playVideo();
 		} else {
 
 			// showCloseDialog();
@@ -877,27 +880,33 @@ public class MainActivity extends Activity implements Callback,
 
 			if (mMediaPlayer == null) {
 
-				if (uri == null)
-					return;
-
 				mHandler.sendMessage(mHandler.obtainMessage(2, View.VISIBLE));
 
-				if (!uri.getLastPathSegment().equals("playlist.m3u8")) {
-					uri = Uri.parse(uri.toString() + "/playlist.m3u8");
+				if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+
+					if (uri == null)
+						return;
+
+					if (!uri.getLastPathSegment().equals("playlist.m3u8")) {
+						uri = Uri.parse(uri.toString() + "/playlist.m3u8");
+					}
+
+					if (uri.getScheme().equals("sftask-streamssl")
+							|| uri.getScheme().equals("enjps")) {
+
+						uri = Uri.parse("https:" + uri.getSchemeSpecificPart());
+					} else if (uri.getScheme().equals("sftask-stream")
+							|| uri.getScheme().equals("enjp")) {
+
+						uri = Uri.parse("http:" + uri.getSchemeSpecificPart());
+					}
+
+					uri = Uri.parse(uri.toString() + "?selfcert=" + authid
+							+ "&key=" + key);
+				} else if (getIntent().getAction().equals(ENJValues.SCHEME_ENJ)) {
+
+					uri = getIntent().getData();
 				}
-
-				if (uri.getScheme().equals("sftask-streamssl")
-						|| uri.getScheme().equals("enjps")) {
-
-					uri = Uri.parse("https:" + uri.getSchemeSpecificPart());
-				} else if (uri.getScheme().equals("sftask-stream")
-						|| uri.getScheme().equals("enjp")) {
-
-					uri = Uri.parse("http:" + uri.getSchemeSpecificPart());
-				}
-
-				uri = Uri.parse(uri.toString() + "?selfcert=" + authid
-						+ "&key=" + key);
 
 				Log.i("videoUrl ---", uri.toString());
 
@@ -909,10 +918,10 @@ public class MainActivity extends Activity implements Callback,
 						mMediaPlayer = MediaPlayer.create(MainActivity.this,
 								uri, holder);
 
-						if (mMediaPlayer == null) {
-							finish();
-							return;
-						}
+//						if (mMediaPlayer == null) {
+//							finish();
+//							return;
+//						}
 
 						mMediaPlayer
 								.setAudioStreamType(AudioManager.STREAM_MUSIC);

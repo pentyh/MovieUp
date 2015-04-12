@@ -1,19 +1,17 @@
 package com.enj.movieup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.enj.common.ENJPrefernece;
 import com.enj.common.ENJValues;
 import com.enj.movieup.R;
 
@@ -165,7 +163,7 @@ public class DownloadActivity extends Activity implements OnClickListener {
 				try {
 					object.put("boardname", boardname);
 					object.put("title", title);
-					object.put("title", title);
+					object.put("date", new Date().toString());
 					object.put("filename", downloadPath + boardname + name);
 					object.put("duration", duration);
 					object.put("videosize", videosize);

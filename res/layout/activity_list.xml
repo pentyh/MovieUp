@@ -1,38 +1,46 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
 
     <RelativeLayout
-        android:id="@+id/list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/bg"
         android:padding="@dimen/drawPadding" >
 
         <Button
+            android:id="@+id/list_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_list_back" />
+            android:background="@drawable/selector_list_back"
+            android:onClick="onClick" />
 
         <TextView
+            android:id="@+id/list_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Download" />
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
 
         <Button
+            android:id="@+id/list_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/selector_list_close" />
+            android:background="@drawable/selector_list_close"
+            android:onClick="onClick" />
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/list_title" >
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/ic_list_bg" >
     </FrameLayout>
 
-</RelativeLayout>
+</LinearLayout>
