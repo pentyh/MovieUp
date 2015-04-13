@@ -1,5 +1,7 @@
 package com.enj.movieup;
 
+import com.enj.common.ENJApplication;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,18 +49,31 @@ public class MenuActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.menu_download:
 
-			intent.setClass(this, DownloadActivity.class);
+			intent.setClass(this, ListActivity.class);
+			startActivity(intent);
 			break;
 		case R.id.menu_favorites:
 
 			intent.setClass(this, ListActivity.class);
+			startActivity(intent);
 			break;
 		case R.id.menu_setting:
 
 			break;
 		}
 
-		startActivity(intent);
-
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		ENJApplication.pushActivity(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ENJApplication.removeActivity(this);
+	}
+
 }

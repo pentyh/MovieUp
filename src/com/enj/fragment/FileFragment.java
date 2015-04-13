@@ -2,8 +2,6 @@ package com.enj.fragment;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,8 +21,6 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract.Intents;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -151,12 +147,13 @@ public class FileFragment extends Fragment implements OnClickListener,
 		switch (v.getId()) {
 		case R.id.list_file_play:
 
-			ENJUtils.alert(listItems.get(mIndex).get("ItemPath").toString());
+			String path = listItems.get(mIndex).get("ItemPath").toString();
+			
+			ENJUtils.alert(path);
 
 			Intent intent = new Intent(ENJValues.SCHEME_ENJ);
 			intent.setClass(ENJApplication.getContext(), MainActivity.class);
-			intent.setData(Uri.parse(listItems.get(mIndex).get("ItemPath")
-					.toString()));
+			intent.setData(Uri.parse(path));
 			startActivity(intent);
 
 			break;

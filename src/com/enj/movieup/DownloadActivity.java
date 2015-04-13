@@ -12,10 +12,12 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.enj.common.ENJApplication;
 import com.enj.common.ENJValues;
 import com.enj.movieup.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,6 +86,10 @@ public class DownloadActivity extends Activity implements OnClickListener {
 			finish();
 			break;
 		case R.id.download_ok:
+
+			Intent intent = new Intent();
+			intent.setClass(this, ListActivity.class);
+			startActivity(intent);
 
 			finish();
 			break;
@@ -190,4 +196,17 @@ public class DownloadActivity extends Activity implements OnClickListener {
 			}
 		}
 	};
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		ENJApplication.pushActivity(this);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		ENJApplication.removeActivity(this);
+	}
+
 }

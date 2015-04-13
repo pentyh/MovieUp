@@ -12,6 +12,7 @@ import java.util.Date;
 import com.enj.common.ENJApplication;
 import com.enj.common.ENJValues;
 import com.enj.movieup.R;
+import com.enj.utils.ENJUtils;
 import com.enjsoft.util.EnjCert;
 import com.enjsoft.util.EnjCert.OnCertCompleteListener;
 
@@ -67,6 +68,7 @@ public class MainActivity extends Activity implements Callback,
 		OnClickListener, OnCertCompleteListener {
 	private static final String TAG = MainActivity.class.toString();
 
+	private boolean isSurfaveCreated = false;
 	private static String authid;
 	private static String key = "";
 
@@ -906,22 +908,26 @@ public class MainActivity extends Activity implements Callback,
 				} else if (getIntent().getAction().equals(ENJValues.SCHEME_ENJ)) {
 
 					uri = getIntent().getData();
+					ENJUtils.alert("??? " + getIntent().getAction());
 				}
-
-				Log.i("videoUrl ---", uri.toString());
+				ENJUtils.alert(getIntent().getAction());
+				Log.i("final Url ---", uri.toString());
 
 				new Thread(new Runnable() {
 
 					@Override
 					public void run() {
 
-						mMediaPlayer = MediaPlayer.create(MainActivity.this,
-								uri, holder);
+						while (!isSurfaveCreated) {
+							try {
+								Thread.sleep(10);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
 
-//						if (mMediaPlayer == null) {
-//							finish();
-//							return;
-//						}
+						mMediaPlayer = MediaPlayer.create(
+								ENJApplication.getContext(), uri, holder);
 
 						mMediaPlayer
 								.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -951,11 +957,13 @@ public class MainActivity extends Activity implements Callback,
 	@Override
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 
+		isSurfaveCreated = true;
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder arg0) {
 
+		isSurfaveCreated = true;
 	}
 
 	@Override

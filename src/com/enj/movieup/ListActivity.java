@@ -8,16 +8,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public class ListActivity extends Activity implements OnClickListener {
 
 	public TextView mTitle;
-	private FrameLayout mFrameLayout;
 
 	Fragment mFragment;
 
@@ -27,19 +24,32 @@ public class ListActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_list);
 
 		mTitle = (TextView) findViewById(R.id.list_title);
-		mFrameLayout = (FrameLayout) findViewById(R.id.fragment_container);
+		mTitle.setText("Download");
+
+		// if (mFrameLayout != null) {
+		// FragmentTransaction transaction = getFragmentManager()
+		// .beginTransaction();
+		// mTitle.setText("Download");
+		// mFragment = new FolderFragment();
+		// mFragment.setArguments(getIntent().getExtras());
+		// transaction.add(R.id.fragment_container, mFragment, mFragment
+		// .getClass().toString());
+		// transaction.commit();
+		// }
+
+		if (savedInstanceState == null) {
+
+			setDefaultFragment();
+		}
+	}
+
+	private void setDefaultFragment() {
 
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
-		if (mFrameLayout != null) {
-
-			mTitle.setText("Download");
-			mFragment = new FolderFragment();
-			mFragment.setArguments(getIntent().getExtras());
-			transaction.add(R.id.fragment_container, mFragment, mFragment
-					.getClass().toString());
-			transaction.commit();
-		}
+		mFragment = new FolderFragment();
+		transaction.replace(R.id.fragment_container, mFragment);
+		transaction.commit();
 	}
 
 	public void changeToFileFragment(String folder) {
@@ -62,6 +72,9 @@ public class ListActivity extends Activity implements OnClickListener {
 
 		switch (v.getId()) {
 		case R.id.list_back:
+
+			getFragmentManager().getBackStackEntryCount();
+			getFragmentManager().popBackStack();
 
 			break;
 		case R.id.list_close:

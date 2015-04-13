@@ -9,7 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import com.enj.common.ENJApplication;
+
 import android.util.Log;
+import android.widget.Toast;
 
 public class ENJUtils {
 
@@ -46,6 +49,12 @@ public class ENJUtils {
 		}
 
 		return sb.toString();
+	}
+
+	public static void toast(String msg) {
+
+		Toast.makeText(ENJApplication.getContext(), msg, Toast.LENGTH_SHORT)
+				.show();
 	}
 
 	public static void alert(String msg) {
