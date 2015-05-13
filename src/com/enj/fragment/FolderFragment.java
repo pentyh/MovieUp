@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class FolderFragment extends Fragment implements OnItemClickListener {
 
@@ -54,7 +53,7 @@ public class FolderFragment extends Fragment implements OnItemClickListener {
 
 		HashMap<String, Object> map;
 
-		File root = new File(ENJValues.FILE_PATH);
+		File root = new File(ENJValues.PATH_ROOT);
 
 		if (!root.isDirectory()) {
 
@@ -68,7 +67,13 @@ public class FolderFragment extends Fragment implements OnItemClickListener {
 
 				map = new HashMap<String, Object>();
 				map.put("ItemText", file.getName());
-				listItems.add(map);
+
+				if (file.getName().equals("Favorites")) {
+					listItems.add(0, map);
+				} else {
+					listItems.add(map);
+				}
+
 			}
 		}
 
@@ -81,7 +86,7 @@ public class FolderFragment extends Fragment implements OnItemClickListener {
 
 		HashMap<String, Object> map;
 
-		File root = new File(ENJValues.FILE_PATH);
+		File root = new File(ENJValues.PATH_ROOT);
 
 		for (File file : root.listFiles()) {
 

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,6 +50,20 @@ public class ENJUtils {
 		}
 
 		return sb.toString();
+	}
+
+	public static void writeFile(String path, String json) {
+
+		try {
+			File file = new File(path);
+			FileOutputStream fos = new FileOutputStream(file);
+
+			byte[] b = json.getBytes();
+			fos.write(b);
+			fos.close();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	public static void toast(String msg) {

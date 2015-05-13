@@ -51,8 +51,6 @@ public class FileFragment extends Fragment implements OnClickListener,
 
 		if (!mFolder.equals("")) {
 
-			root.findViewById(R.id.list_file_play).setOnClickListener(this);
-
 			mListView = (ListView) root.findViewById(R.id.list);
 			mFileAdapter = new FileAdapter(ENJApplication.getContext(),
 					getData());
@@ -60,6 +58,10 @@ public class FileFragment extends Fragment implements OnClickListener,
 			mListView.setAdapter(mFileAdapter);
 
 			mListView.setOnItemClickListener(this);
+
+			root.findViewById(R.id.list_file_all).setOnClickListener(this);
+			root.findViewById(R.id.list_file_play).setOnClickListener(this);
+			root.findViewById(R.id.list_file_open).setOnClickListener(this);
 		}
 
 		return root;
@@ -71,7 +73,7 @@ public class FileFragment extends Fragment implements OnClickListener,
 
 		HashMap<String, Object> map;
 
-		File root = new File(ENJValues.FILE_PATH + mFolder);
+		File root = new File(ENJValues.PATH_ROOT + mFolder);
 		for (File file : root.listFiles()) {
 
 			if (file.isDirectory())
@@ -96,6 +98,19 @@ public class FileFragment extends Fragment implements OnClickListener,
 							map.put("ItemTitle", object.getString("title"));
 							map.put("ItemDownload", object.getString("date"));
 							map.put("ItemFilename", file.getName());
+							map.put("ItemCheck", false);
+
+							File favorites = new File(ENJValues.PATH_FAVORITES);
+							if (favorites.exists()) {
+
+								for (String filename : favorites.list()) {
+
+									if (file.getName().equals(filename)) {
+										map.put("ItemCheck", true);
+									}
+								}
+							}
+
 							map.put("ItemPath", object.getString("filename"));
 							listItems.add(map);
 						}
@@ -145,16 +160,28 @@ public class FileFragment extends Fragment implements OnClickListener,
 	public void onClick(View v) {
 
 		switch (v.getId()) {
+		case R.id.list_file_all:
+			break;
 		case R.id.list_file_play:
 
 			String path = listItems.get(mIndex).get("ItemPath").toString();
-			
+
 			ENJUtils.alert(path);
 
 			Intent intent = new Intent(ENJValues.SCHEME_ENJ);
 			intent.setClass(ENJApplication.getContext(), MainActivity.class);
 			intent.setData(Uri.parse(path));
 			startActivity(intent);
+
+			break;
+
+		case R.id.list_file_open:
+
+			String path_txt = listItems.get(mIndex).get("ItemPath").toString();
+			path_txt = path_txt.substring(0, path_txt.lastIndexOf("."))
+					+ ".txt";
+
+			((ListActivity) getActivity()).changeToDetailFragment(path_txt);
 
 			break;
 
@@ -166,8 +193,8 @@ public class FileFragment extends Fragment implements OnClickListener,
 			long id) {
 
 		mIndex = position;
-		((ListActivity) getActivity()).mTitle.setText(listItems.get(position)
-				.get("ItemTitle").toString());
+//		((ListActivity) getActivity()).mTitle.setText(listItems.get(position)
+//				.get("ItemTitle").toString());
 
 		mFileAdapter.setSelectedPosition(mIndex);
 		mFileAdapter.notifyDataSetInvalidated();

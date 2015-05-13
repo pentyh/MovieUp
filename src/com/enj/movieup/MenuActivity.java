@@ -50,11 +50,13 @@ public class MenuActivity extends Activity implements OnClickListener {
 		case R.id.menu_download:
 
 			intent.setClass(this, ListActivity.class);
+			intent.setType("D");
 			startActivity(intent);
 			break;
 		case R.id.menu_favorites:
 
 			intent.setClass(this, ListActivity.class);
+			intent.setType("F");
 			startActivity(intent);
 			break;
 		case R.id.menu_setting:

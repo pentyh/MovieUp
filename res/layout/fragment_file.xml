@@ -16,8 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_list_file_all"
-            android:enabled="false"
-            android:onClick="onClick" />
+            android:enabled="false" />
 
         <Button
             android:id="@+id/list_file_play"
@@ -25,17 +24,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/drawPadding"
             android:layout_toRightOf="@+id/list_file_all"
-            android:background="@drawable/selector_list_file_play"
-            android:onClick="onClick" />
+            android:background="@drawable/selector_list_file_play" />
 
         <Button
             android:id="@+id/list_file_open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/selector_list_file_open"
-            android:enabled="false"
-            android:onClick="onClick" />
+            android:background="@drawable/selector_list_file_open" />
     </RelativeLayout>
 
     <ListView

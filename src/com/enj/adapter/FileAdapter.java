@@ -7,7 +7,7 @@ import com.enj.common.ENJApplication;
 import com.enj.movieup.R;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,11 +39,11 @@ public class FileAdapter extends BaseAdapter {
 	}
 
 	public Object getItem(int position) {
-		return position;
+		return null;
 	}
 
 	public long getItemId(int position) {
-		return position;
+		return 0;
 	}
 
 	public void setSelectedPosition(int position) {
@@ -74,6 +74,22 @@ public class FileAdapter extends BaseAdapter {
 
 		holder.itemtitle
 				.setText(data.get(position).get("ItemTitle").toString());
+
+		Drawable drawable;
+		if ((Boolean) data.get(position).get("ItemCheck")) {
+
+			drawable = ENJApplication.getContext().getResources()
+					.getDrawable(R.drawable.ic_list_favorites_check);
+
+		} else {
+
+			drawable = ENJApplication.getContext().getResources()
+					.getDrawable(R.drawable.ic_list_favorites);
+
+		}
+		drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+				drawable.getMinimumHeight()); // 设置边界
+		holder.itemtitle.setCompoundDrawables(null, null, drawable, null);
 		holder.itemdownload.setText(data.get(position).get("ItemDownload")
 				.toString());
 		holder.itemfilename.setText(data.get(position).get("ItemFilename")

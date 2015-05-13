@@ -1,6 +1,7 @@
 package com.enj.movieup;
 
 import com.enj.common.ENJApplication;
+import com.enj.fragment.DetailFragment;
 import com.enj.fragment.FileFragment;
 import com.enj.fragment.FolderFragment;
 
@@ -24,18 +25,6 @@ public class ListActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_list);
 
 		mTitle = (TextView) findViewById(R.id.list_title);
-		mTitle.setText("Download");
-
-		// if (mFrameLayout != null) {
-		// FragmentTransaction transaction = getFragmentManager()
-		// .beginTransaction();
-		// mTitle.setText("Download");
-		// mFragment = new FolderFragment();
-		// mFragment.setArguments(getIntent().getExtras());
-		// transaction.add(R.id.fragment_container, mFragment, mFragment
-		// .getClass().toString());
-		// transaction.commit();
-		// }
 
 		if (savedInstanceState == null) {
 
@@ -47,7 +36,23 @@ public class ListActivity extends Activity implements OnClickListener {
 
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
-		mFragment = new FolderFragment();
+
+		String type = getIntent().getType();
+		if (type.equals("D")) {
+
+			mTitle.setText("Download");
+			mFragment = new FolderFragment();
+		} else if (type.equals("F")) {
+
+			mTitle.setText("Favorites");
+			mFragment = new FileFragment();
+
+			Bundle bundle = new Bundle();
+			bundle.putString("folder", "Favorites");
+			mFragment.setArguments(bundle);
+
+		}
+
 		transaction.replace(R.id.fragment_container, mFragment);
 		transaction.commit();
 	}
@@ -58,6 +63,21 @@ public class ListActivity extends Activity implements OnClickListener {
 		bundle.putString("folder", folder);
 
 		mFragment = new FileFragment();
+		mFragment.setArguments(bundle);
+		FragmentTransaction transaction = getFragmentManager()
+				.beginTransaction();
+		transaction.replace(R.id.fragment_container, mFragment, mFragment
+				.getClass().toString());
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	public void changeToDetailFragment(String path) {
+
+		Bundle bundle = new Bundle();
+		bundle.putString("path", path);
+
+		mFragment = new DetailFragment();
 		mFragment.setArguments(bundle);
 		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();

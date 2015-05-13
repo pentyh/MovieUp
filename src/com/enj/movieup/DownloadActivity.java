@@ -47,7 +47,7 @@ public class DownloadActivity extends Activity implements OnClickListener {
 	private static final int DOWN_UPDATE = 1;
 	private static final int DOWN_OVER = 2;
 
-	private static String downloadPath = ENJValues.FILE_PATH;
+	private static String downloadPath = ENJValues.PATH_ROOT;
 
 	// private static final String saveFileName = downloadPath + "Update.apk";
 
