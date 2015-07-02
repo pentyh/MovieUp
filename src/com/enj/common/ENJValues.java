@@ -13,9 +13,10 @@ public class ENJValues {
 	// 다운로드주
 	public static final String PATH_ROOT = Environment
 			.getExternalStorageDirectory() + "/MovieUp/";
-
-	public static final String PATH_FAVORITES = PATH_ROOT + "Favorites/";
+	public static final String FAVORITES = "Favorites";
+	public static final String PATH_FAVORITES = PATH_ROOT + FAVORITES + "/";
 
 	// sheme
 	public static final String SCHEME_ENJ = "enjp";
+	public static final String SCHEME_ENJS = "enjps";
 }

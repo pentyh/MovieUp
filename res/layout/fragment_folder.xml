@@ -5,13 +5,14 @@
     android:background="@android:color/white"
     android:orientation="vertical" >
 
-    <ListView
+    <com.enj.widget.DelSlideListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="@null"
         android:focusableInTouchMode="true"
         android:listSelector="@drawable/list_selector"
-        android:scrollbars="none" />
+        android:scrollbars="none" >
+    </com.enj.widget.DelSlideListView>
 
 </LinearLayout>

@@ -11,13 +11,20 @@ import org.json.JSONObject;
 import com.enj.adapter.FileAdapter;
 import com.enj.common.ENJApplication;
 import com.enj.common.ENJValues;
+import com.enj.movieup.FileActionSheet.OnActionSheetSelected;
+import com.enj.movieup.FileActionSheet;
 import com.enj.movieup.ListActivity;
 import com.enj.movieup.MainActivity;
 import com.enj.movieup.R;
 import com.enj.utils.ENJUtils;
+import com.enj.widget.DelSlideListView;
+import com.enj.widget.ListViewonSingleTapUpListenner;
+import com.enj.widget.OnDeleteListioner;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,19 +34,21 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
-public class FileFragment extends Fragment implements OnClickListener,
-		OnItemClickListener {
+public class FileFragment extends Fragment implements OnDeleteListioner,
+		ListViewonSingleTapUpListenner, OnActionSheetSelected,
+		OnCancelListener, OnClickListener, OnItemClickListener {
 
 	private String mFolder;
 
 	private int mIndex = 0;
 
-	ListView mListView;
+	DelSlideListView mListView;
 	FileAdapter mFileAdapter;
 
 	ArrayList<HashMap<String, Object>> listItems;
+
+	int delID = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,15 +56,20 @@ public class FileFragment extends Fragment implements OnClickListener,
 
 		mFolder = getArguments().getString("folder", "");
 
+		((ListActivity) getActivity()).mTitle.setText(mFolder);
 		View root = inflater.inflate(R.layout.fragment_file, container, false);
 
 		if (!mFolder.equals("")) {
 
-			mListView = (ListView) root.findViewById(R.id.list);
+			mListView = (DelSlideListView) root.findViewById(R.id.list);
 			mFileAdapter = new FileAdapter(ENJApplication.getContext(),
 					getData());
 			mFileAdapter.setSelectedPosition(mIndex);
 			mListView.setAdapter(mFileAdapter);
+
+			mListView.setDeleteListioner(this);
+			mListView.setSingleTapUpListenner(this);
+			mFileAdapter.setOnDeleteListioner(this);
 
 			mListView.setOnItemClickListener(this);
 
@@ -74,6 +88,9 @@ public class FileFragment extends Fragment implements OnClickListener,
 		HashMap<String, Object> map;
 
 		File root = new File(ENJValues.PATH_ROOT + mFolder);
+		if (!root.exists())
+			return listItems;
+
 		for (File file : root.listFiles()) {
 
 			if (file.isDirectory())
@@ -159,14 +176,31 @@ public class FileFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 
+		if (listItems.size() == 0) {
+
+			ENJUtils.toast("파일이 존재하지 않습니다");
+			return;
+		}
+
 		switch (v.getId()) {
 		case R.id.list_file_all:
+
+			ArrayList<String> arrayList = new ArrayList<String>();
+
+			for (HashMap<String, Object> map : listItems) {
+
+				arrayList.add(map.get("ItemPath").toString());
+			}
+
+			Intent arrintent = new Intent(ENJValues.SCHEME_ENJS);
+			arrintent.setClass(ENJApplication.getContext(), MainActivity.class);
+			arrintent.putStringArrayListExtra("paths", arrayList);
+			startActivity(arrintent);
+
 			break;
 		case R.id.list_file_play:
 
 			String path = listItems.get(mIndex).get("ItemPath").toString();
-
-			ENJUtils.alert(path);
 
 			Intent intent = new Intent(ENJValues.SCHEME_ENJ);
 			intent.setClass(ENJApplication.getContext(), MainActivity.class);
@@ -193,17 +227,79 @@ public class FileFragment extends Fragment implements OnClickListener,
 			long id) {
 
 		mIndex = position;
-//		((ListActivity) getActivity()).mTitle.setText(listItems.get(position)
-//				.get("ItemTitle").toString());
-
 		mFileAdapter.setSelectedPosition(mIndex);
-		mFileAdapter.notifyDataSetInvalidated();
+		mFileAdapter.notifyDataSetChanged();
 
 		// ((ListActivity) getActivity()).changeFragment();
-		//
 		// String folder = listItems.get(position).get("ItemText").toString();
-		//
 		// Log.i("RRR", position + "|" + folder);
+	}
+
+	@Override
+	public void onCancel(DialogInterface dialog) {
+
+	}
+
+	@Override
+	public void onClick(int whichButton) {
+
+		switch (whichButton) {
+		case 0:
+
+			String path = listItems.get(delID).get("ItemPath").toString();
+
+			File file = new File(path);
+
+			String path_txt = path.substring(0, path.lastIndexOf(".")) + ".txt";
+
+			File file_txt = new File(path_txt);
+
+			File file_favorites = new File(ENJValues.PATH_FAVORITES
+					+ file_txt.getName());
+
+			if (file_favorites.exists())
+				file_favorites.delete();
+
+			if (!mFolder.equals(ENJValues.FAVORITES)) {
+
+				if (file.exists())
+					file.delete();
+
+				if (file_txt.exists())
+					file_txt.delete();
+			}
+
+			listItems.remove(delID);
+			mListView.deleteItem();
+			mFileAdapter.notifyDataSetChanged();
+
+			break;
+		case 1:
+
+			break;
+		}
+	}
+
+	@Override
+	public void onSingleTapUp() {
+
+	}
+
+	@Override
+	public boolean isCandelete(int position) {
+		return true;
+	}
+
+	@Override
+	public void onDelete(int ID) {
+
+		delID = ID;
+		FileActionSheet.showSheet(getActivity(), this, this);
+	}
+
+	@Override
+	public void onBack() {
+
 	}
 
 }

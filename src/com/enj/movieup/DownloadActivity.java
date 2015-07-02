@@ -89,6 +89,7 @@ public class DownloadActivity extends Activity implements OnClickListener {
 
 			Intent intent = new Intent();
 			intent.setClass(this, ListActivity.class);
+			intent.setType("D");
 			startActivity(intent);
 
 			finish();

@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.enj.common.ENJApplication;
@@ -126,6 +127,9 @@ public class MainActivity extends Activity implements Callback,
 
 	EnjCert m_ec;
 
+	int index = 0;
+	ArrayList<String> path_array = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -193,6 +197,10 @@ public class MainActivity extends Activity implements Callback,
 		} else if (intent.getAction().equals(ENJValues.SCHEME_ENJ)) {
 
 			playVideo();
+		} else if (intent.getAction().equals(ENJValues.SCHEME_ENJS)) {
+
+			playVideo();
+
 		} else {
 
 			// showCloseDialog();
@@ -386,6 +394,9 @@ public class MainActivity extends Activity implements Callback,
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+
+		if (mMediaPlayer == null)
+			return true;
 
 		metrics = this.getResources().getDisplayMetrics();
 
@@ -763,7 +774,7 @@ public class MainActivity extends Activity implements Callback,
 				// + "|"
 				// + (mMediaPlayer.getCurrentPosition() - old_position));
 
-				if (mMediaPlayer.getCurrentPosition() > old_position) {
+				if (mMediaPlayer.getCurrentPosition() > (old_position - 20)) {
 
 					loadingBar.setVisibility(View.GONE);
 
@@ -909,7 +920,15 @@ public class MainActivity extends Activity implements Callback,
 
 					uri = getIntent().getData();
 					ENJUtils.alert("??? " + getIntent().getAction());
+				} else if (getIntent().getAction()
+						.equals(ENJValues.SCHEME_ENJS)) {
+
+					path_array = getIntent().getStringArrayListExtra("paths");
+					uri = Uri.parse(path_array.get(index));
+					index++;
+
 				}
+
 				ENJUtils.alert(getIntent().getAction());
 				Log.i("final Url ---", uri.toString());
 
@@ -1075,7 +1094,28 @@ public class MainActivity extends Activity implements Callback,
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		Log.i("onCompletion", mp.getVideoWidth() + "|" + mp.getVideoHeight());
-		finish();
+
+		if (path_array != null) {
+
+			if (index == path_array.size()) {
+				finish();
+			}
+			if (path_array.size() > 1) {
+
+				handler.removeCallbacks(updateThread);
+				handler.removeCallbacks(showRunnable);
+
+				mMediaPlayer.release();
+				mMediaPlayer = null;
+
+				playVideo();
+			} else {
+				finish();
+			}
+		} else {
+
+			finish();
+		}
 
 	}
 
@@ -1102,7 +1142,9 @@ public class MainActivity extends Activity implements Callback,
 
 	@Override
 	public void onStartTrackingTouch(SeekBar arg0) {
-		isSeek = true;
+
+		if (arg0 == seek)
+			isSeek = true;
 	}
 
 	@Override
@@ -1118,7 +1160,8 @@ public class MainActivity extends Activity implements Callback,
 			break;
 
 		}
-		isSeek = false;
+		if (arg0 == seek)
+			isSeek = false;
 	}
 
 	@Override

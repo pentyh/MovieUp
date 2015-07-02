@@ -4,6 +4,7 @@ import com.enj.common.ENJApplication;
 import com.enj.fragment.DetailFragment;
 import com.enj.fragment.FileFragment;
 import com.enj.fragment.FolderFragment;
+import com.enj.utils.ENJUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -96,6 +97,20 @@ public class ListActivity extends Activity implements OnClickListener {
 			getFragmentManager().getBackStackEntryCount();
 			getFragmentManager().popBackStack();
 
+			ENJUtils.alert(getFragmentManager().getBackStackEntryCount()+"");
+			if(getFragmentManager().getBackStackEntryCount() == 1){
+				
+				String type = getIntent().getType();
+				if (type.equals("D")) {
+					
+					mTitle.setText("Download");
+				}else{
+					mTitle.setText("Favorites");
+				}
+			}else if (getFragmentManager().getBackStackEntryCount() == 0) {
+				finish();
+			}
+			
 			break;
 		case R.id.list_close:
 

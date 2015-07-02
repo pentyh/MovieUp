@@ -1,17 +1,24 @@
 package com.enj.adapter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.enj.common.ENJApplication;
+import com.enj.common.ENJValues;
 import com.enj.movieup.R;
+import com.enj.utils.ENJUtils;
+import com.enj.widget.OnDeleteListioner;
 
+import android.R.bool;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +28,9 @@ public class FileAdapter extends BaseAdapter {
 	private ArrayList<HashMap<String, Object>> data;
 
 	private int selectedPosition = 0;
+
+	private OnDeleteListioner mOnDeleteListioner;
+	private boolean delete = false;
 
 	public FileAdapter(Context context,
 			ArrayList<HashMap<String, Object>> arrayList) {
@@ -34,16 +44,28 @@ public class FileAdapter extends BaseAdapter {
 		data = arrayList;
 	}
 
+	public void setDelete(boolean delete) {
+		this.delete = delete;
+	}
+
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public void setOnDeleteListioner(OnDeleteListioner mOnDeleteListioner) {
+		this.mOnDeleteListioner = mOnDeleteListioner;
+	}
+
 	public int getCount() {
 		return data.size();
 	}
 
 	public Object getItem(int position) {
-		return null;
+		return data.get(position);
 	}
 
 	public long getItemId(int position) {
-		return 0;
+		return position;
 	}
 
 	public void setSelectedPosition(int position) {
@@ -51,7 +73,7 @@ public class FileAdapter extends BaseAdapter {
 		selectedPosition = position;
 	}
 
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 
 		View vi = convertView;
 		ViewHolder holder;
@@ -63,8 +85,13 @@ public class FileAdapter extends BaseAdapter {
 
 			holder.box = (LinearLayout) vi.findViewById(R.id.box);
 			holder.itemtitle = (TextView) vi.findViewById(R.id.itemtitle);
+			holder.itemfavorites = (CheckBox) vi
+					.findViewById(R.id.itemfavorites);
 			holder.itemdownload = (TextView) vi.findViewById(R.id.itemdownload);
 			holder.itemfilename = (TextView) vi.findViewById(R.id.itemfilename);
+
+			holder.delete_action = (TextView) vi
+					.findViewById(R.id.delete_action);
 
 			vi.setTag(holder);
 		} else {
@@ -75,25 +102,127 @@ public class FileAdapter extends BaseAdapter {
 		holder.itemtitle
 				.setText(data.get(position).get("ItemTitle").toString());
 
-		Drawable drawable;
-		if ((Boolean) data.get(position).get("ItemCheck")) {
+		// File favorites = new File(ENJValues.PATH_FAVORITES);
+		//
+		// if (favorites.exists()) {
+		//
+		// for (String filename : favorites.list()) {
+		//
+		// if (data.get(position).get("ItemFilename").equals(filename)) {
+		// holder.itemfavorites.setChecked(true);
+		// } else {
+		// holder.itemfavorites.setChecked(false);
+		// }
+		// }
+		// } else {
+		// holder.itemfavorites.setChecked(false);
+		// }
 
-			drawable = ENJApplication.getContext().getResources()
-					.getDrawable(R.drawable.ic_list_favorites_check);
+		holder.itemfavorites.setChecked(((Boolean) data.get(position).get(
+				"ItemCheck")));
+		holder.itemfavorites.setOnClickListener(new OnClickListener() {
 
-		} else {
+			@Override
+			public void onClick(View v) {
 
-			drawable = ENJApplication.getContext().getResources()
-					.getDrawable(R.drawable.ic_list_favorites);
+				boolean isChecked = ((CheckBox) v).isChecked();
+				data.get(position).put("ItemCheck", isChecked);
 
-		}
-		drawable.setBounds(0, 0, drawable.getMinimumWidth(),
-				drawable.getMinimumHeight()); // 设置边界
-		holder.itemtitle.setCompoundDrawables(null, null, drawable, null);
+				ENJUtils.alert(data.get(position).get("ItemFilename")
+						.toString());
+				ENJUtils.alert("position : " + position);
+
+				String path_txt = data.get(position).get("ItemPath").toString();
+				path_txt = path_txt.substring(0, path_txt.lastIndexOf("."))
+						+ ".txt";
+
+				File info = new File(path_txt);
+				File folder = new File(ENJValues.PATH_FAVORITES);
+
+				if (isChecked) {
+
+					if (!folder.exists()) {
+						folder.mkdir();
+					}
+
+					String path = ENJValues.PATH_FAVORITES + info.getName();
+					String json = ENJUtils.getString(info);
+					ENJUtils.writeFile(path, json);
+				} else {
+
+					File file = new File(ENJValues.PATH_FAVORITES
+							+ info.getName());
+					if (file.exists()) {
+						file.delete();
+					}
+				}
+			}
+		});
+
+		// holder.itemfavorites
+		// .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		//
+		// @Override
+		// public void onCheckedChanged(CompoundButton buttonView,
+		// boolean isChecked) {
+		//
+		// ENJUtils.alert(data.get(position).get("ItemFilename")
+		// .toString());
+		// ENJUtils.alert("position : " + position);
+		//
+		// String path_txt = data.get(position).get("ItemPath")
+		// .toString();
+		// path_txt = path_txt.substring(0,
+		// path_txt.lastIndexOf("."))
+		// + ".txt";
+		//
+		// File info = new File(path_txt);
+		// File folder = new File(ENJValues.PATH_FAVORITES);
+		//
+		// if (isChecked) {
+		//
+		// if (!folder.exists()) {
+		// folder.mkdir();
+		// }
+		//
+		// String path = ENJValues.PATH_FAVORITES
+		// + info.getName();
+		// String json = ENJUtils.getString(info);
+		// ENJUtils.writeFile(path, json);
+		// } else {
+		//
+		// File file = new File(ENJValues.PATH_FAVORITES
+		// + info.getName());
+		// if (file.exists()) {
+		// file.delete();
+		// }
+		// }
+		// }
+		// });
+
 		holder.itemdownload.setText(data.get(position).get("ItemDownload")
 				.toString());
-		holder.itemfilename.setText(data.get(position).get("ItemFilename")
-				.toString());
+
+		holder.itemfilename.setText(data
+				.get(position)
+				.get("ItemFilename")
+				.toString()
+				.substring(
+						0,
+						data.get(position).get("ItemFilename").toString()
+								.lastIndexOf(".")));
+
+		final OnClickListener mOnClickListener = new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+
+				if (mOnDeleteListioner != null)
+					mOnDeleteListioner.onDelete(position);
+			}
+		};
+
+		holder.delete_action.setOnClickListener(mOnClickListener);
 
 		if (selectedPosition == position) {
 
@@ -103,11 +232,6 @@ public class FileAdapter extends BaseAdapter {
 			holder.box.setBackgroundResource(R.drawable.ic_list_file_item_bg);
 		}
 
-		// Drawable nav_up=getResources().getDrawable(R.drawable.button_nav_up);
-		// nav_up.setBounds(0, 0, nav_up.getMinimumWidth(),
-		// nav_up.getMinimumHeight());
-		// textview1.setCompoundDrawables(null, null, nav_up, null);
-
 		return vi;
 	}
 
@@ -115,7 +239,10 @@ public class FileAdapter extends BaseAdapter {
 
 		LinearLayout box;
 		TextView itemtitle;
+		CheckBox itemfavorites;
 		TextView itemdownload;
 		TextView itemfilename;
+
+		public TextView delete_action;
 	}
 }

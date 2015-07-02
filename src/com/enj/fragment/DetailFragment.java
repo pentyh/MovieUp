@@ -75,10 +75,15 @@ public class DetailFragment extends Fragment implements OnClickListener,
 						if (video.exists()) {
 
 							File folder = new File(ENJValues.PATH_FAVORITES);
-							for (String filename : folder.list()) {
 
-								if (filename.equals(info.getName())) {
-									mFavorites.setChecked(true);
+							if (folder.exists()) {
+
+								for (String filename : folder.list()) {
+
+									if (filename.equals(info.getName())) {
+										mFavorites.setChecked(true);
+										break;
+									}
 								}
 							}
 
