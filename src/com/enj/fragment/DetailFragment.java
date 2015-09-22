@@ -2,7 +2,9 @@ package com.enj.fragment;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,16 +126,12 @@ public class DetailFragment extends Fragment implements OnClickListener,
 					((TextView) root.findViewById(R.id.detail_filename))
 							.setText(video.getName());
 
-					long duration = object.optInt("duration");
-					SimpleDateFormat timetostring = new SimpleDateFormat(
-							"mm:ss");
-					String durationString = "";
-					if (((duration / 1000) / 3600) > 0) {
-						durationString += (duration / 1000) / 3600 + ":";
-					}
-					durationString += timetostring.format(new Date(duration));
+					long duration = object.optLong("duration");
 
+					String durationString = ENJValues.Format_time
+							.format(new Date(duration - ENJValues.Time_Zone));
 					ENJUtils.alert(durationString + "");
+
 					((TextView) root.findViewById(R.id.detail_duration))
 							.setText(durationString);
 

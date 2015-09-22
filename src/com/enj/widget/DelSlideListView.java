@@ -126,6 +126,10 @@ public class DelSlideListView extends ListView implements
 						(int) e2.getX(), (int) e2.getY());
 				final int p1 = pointToPosition1
 						- this.getFirstVisiblePosition();
+				
+				if (mOnDeleteListioner == null) {
+					return true;
+				}
 				if (p1 == position && mOnDeleteListioner.isCandelete(p1)) {
 					mScrollLinerLayout = (ScrollLinerLayout) this
 							.getChildAt(p1);

@@ -52,6 +52,17 @@ public class ListActivity extends Activity implements OnClickListener {
 			bundle.putString("folder", "Favorites");
 			mFragment.setArguments(bundle);
 
+		} else if (type.equals("V")) {
+
+//			mTitle.setText(getIntent().getExtras().getString("boardname"));
+			mFragment = new FileFragment();
+
+			Bundle bundle = new Bundle();
+			bundle.putString("folder",
+					getIntent().getExtras().getString("folder"));
+			bundle.putString("type", "V");
+			bundle.putString("path", getIntent().getExtras().getString("path"));
+			mFragment.setArguments(bundle);
 		}
 
 		transaction.replace(R.id.fragment_container, mFragment);
@@ -97,20 +108,20 @@ public class ListActivity extends Activity implements OnClickListener {
 			getFragmentManager().getBackStackEntryCount();
 			getFragmentManager().popBackStack();
 
-			ENJUtils.alert(getFragmentManager().getBackStackEntryCount()+"");
-			if(getFragmentManager().getBackStackEntryCount() == 1){
-				
+			ENJUtils.alert(getFragmentManager().getBackStackEntryCount() + "");
+			if (getFragmentManager().getBackStackEntryCount() == 1) {
+
 				String type = getIntent().getType();
 				if (type.equals("D")) {
-					
+
 					mTitle.setText("Download");
-				}else{
+				} else {
 					mTitle.setText("Favorites");
 				}
-			}else if (getFragmentManager().getBackStackEntryCount() == 0) {
+			} else if (getFragmentManager().getBackStackEntryCount() == 0) {
 				finish();
 			}
-			
+
 			break;
 		case R.id.list_close:
 

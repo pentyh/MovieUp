@@ -1,5 +1,8 @@
 package com.enj.common;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 import android.os.Environment;
 
 public class ENJValues {
@@ -19,4 +22,11 @@ public class ENJValues {
 	// sheme
 	public static final String SCHEME_ENJ = "enjp";
 	public static final String SCHEME_ENJS = "enjps";
+
+	/* Format */
+	public static int Time_Zone = TimeZone.getDefault().getRawOffset();
+	public static final SimpleDateFormat Formart_Date = new SimpleDateFormat(
+			"yyy-MM-dd HH:mm:ss");
+	public static final SimpleDateFormat Format_time = new SimpleDateFormat(
+			"HH:mm:ss");
 }

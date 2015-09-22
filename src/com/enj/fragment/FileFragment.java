@@ -67,8 +67,12 @@ public class FileFragment extends Fragment implements OnDeleteListioner,
 			mFileAdapter.setSelectedPosition(mIndex);
 			mListView.setAdapter(mFileAdapter);
 
-			mListView.setDeleteListioner(this);
-			mListView.setSingleTapUpListenner(this);
+			if(!mFolder.equals("Favorites")){
+				
+				mListView.setDeleteListioner(this);
+				mListView.setSingleTapUpListenner(this);
+			}
+			
 			mFileAdapter.setOnDeleteListioner(this);
 
 			mListView.setOnItemClickListener(this);
@@ -76,6 +80,16 @@ public class FileFragment extends Fragment implements OnDeleteListioner,
 			root.findViewById(R.id.list_file_all).setOnClickListener(this);
 			root.findViewById(R.id.list_file_play).setOnClickListener(this);
 			root.findViewById(R.id.list_file_open).setOnClickListener(this);
+		}
+
+		if (getArguments().getString("type", "").equals("V")) {
+
+			String path = getArguments().getString("path", "");
+
+			Intent intent = new Intent(ENJValues.SCHEME_ENJ);
+			intent.setClass(ENJApplication.getContext(), MainActivity.class);
+			intent.setData(Uri.parse(path));
+			startActivity(intent);
 		}
 
 		return root;
@@ -115,7 +129,10 @@ public class FileFragment extends Fragment implements OnDeleteListioner,
 							map.put("ItemTitle", object.getString("title"));
 							map.put("ItemDownload", object.getString("date"));
 							map.put("ItemFilename", file.getName());
+							map.put("ItemDuration",
+									object.getString("duration"));
 							map.put("ItemCheck", false);
+							map.put("ItemDRM", object.getString("drm_key"));
 
 							File favorites = new File(ENJValues.PATH_FAVORITES);
 							if (favorites.exists()) {
@@ -233,6 +250,13 @@ public class FileFragment extends Fragment implements OnDeleteListioner,
 		// ((ListActivity) getActivity()).changeFragment();
 		// String folder = listItems.get(position).get("ItemText").toString();
 		// Log.i("RRR", position + "|" + folder);
+
+		String path = listItems.get(mIndex).get("ItemPath").toString();
+
+		Intent intent = new Intent(ENJValues.SCHEME_ENJ);
+		intent.setClass(ENJApplication.getContext(), MainActivity.class);
+		intent.setData(Uri.parse(path));
+		startActivity(intent);
 	}
 
 	@Override

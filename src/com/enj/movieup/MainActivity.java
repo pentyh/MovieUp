@@ -161,10 +161,6 @@ public class MainActivity extends Activity implements Callback,
 					intent.setClass(this, DownloadActivity.class);
 					startActivity(intent);
 
-					// Intent newIntent = new Intent();
-					// newIntent.setClass(this, DownloadActivity.class);
-					// startActivity(newIntent);
-
 					finish();
 					return;
 				}
@@ -621,6 +617,7 @@ public class MainActivity extends Activity implements Callback,
 
 							mMediaPlayer.seekTo(mMediaPlayer
 									.getCurrentPosition() - 1000);
+							mPlayButton.setChecked(false);
 							mMediaPlayer.start();
 							x1 = (int) event.getX(0);
 							y1 = (int) event.getY(0);
@@ -632,6 +629,7 @@ public class MainActivity extends Activity implements Callback,
 						if (Math.abs(event.getX() - x1) > 20) {
 							mMediaPlayer.seekTo(mMediaPlayer
 									.getCurrentPosition() + 1000);
+							mPlayButton.setChecked(false);
 							mMediaPlayer.start();
 							x1 = (int) event.getX(0);
 							y1 = (int) event.getY(0);
@@ -900,9 +898,13 @@ public class MainActivity extends Activity implements Callback,
 					if (uri == null)
 						return;
 
-					if (!uri.getLastPathSegment().equals("playlist.m3u8")) {
+					if (uri.toString().indexOf("playlist.m3u8") != -1) {
 						uri = Uri.parse(uri.toString() + "/playlist.m3u8");
 					}
+
+					// if (!uri.getLastPathSegment().equals("playlist.m3u8")) {
+					// uri = Uri.parse(uri.toString() + "/playlist.m3u8");
+					// }
 
 					if (uri.getScheme().equals("sftask-streamssl")
 							|| uri.getScheme().equals("enjps")) {
@@ -945,9 +947,8 @@ public class MainActivity extends Activity implements Callback,
 							}
 						}
 
-						mMediaPlayer = MediaPlayer.create(
-								ENJApplication.getContext(), uri, holder);
-
+						mMediaPlayer = MediaPlayer.create(MainActivity.this,
+								uri, holder);
 						mMediaPlayer
 								.setAudioStreamType(AudioManager.STREAM_MUSIC);
 						mMediaPlayer

@@ -2,6 +2,7 @@ package com.enj.adapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import com.enj.common.ENJValues;
@@ -9,7 +10,6 @@ import com.enj.movieup.R;
 import com.enj.utils.ENJUtils;
 import com.enj.widget.OnDeleteListioner;
 
-import android.R.bool;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +17,6 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -211,6 +209,10 @@ public class FileAdapter extends BaseAdapter {
 						0,
 						data.get(position).get("ItemFilename").toString()
 								.lastIndexOf(".")));
+		HashMap<String, Object> hashMap = data.get(position);
+		holder.itemfilename.setText(ENJValues.Format_time.format(new Date(Long
+				.valueOf(hashMap.get("ItemDuration").toString())
+				- ENJValues.Time_Zone)));
 
 		final OnClickListener mOnClickListener = new OnClickListener() {
 
@@ -224,14 +226,17 @@ public class FileAdapter extends BaseAdapter {
 
 		holder.delete_action.setOnClickListener(mOnClickListener);
 
-		if (selectedPosition == position) {
+		// if (selectedPosition == position) {
+		//
+		// holder.box
+		// .setBackgroundResource(R.drawable.ic_list_file_item_bg_focus);
+		// } else {
+		holder.box.setBackgroundResource(R.drawable.ic_list_file_item_bg);
+		// }
 
-			holder.box
-					.setBackgroundResource(R.drawable.ic_list_file_item_bg_focus);
-		} else {
-			holder.box.setBackgroundResource(R.drawable.ic_list_file_item_bg);
-		}
-
+		if (!data.get(position).get("ItemDRM").toString().equals(""))
+			holder.itemfavorites
+					.setBackgroundResource(R.drawable.selector_favorites_drm);
 		return vi;
 	}
 

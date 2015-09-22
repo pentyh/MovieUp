@@ -70,6 +70,8 @@
                 <data android:mimeType="application/x-shockwave-flash" />
                 <data android:mimeType="application/xspf+xml" />
                 <data android:mimeType="misc/ultravox" />
+                <data android:pathPattern=".*\\.m3u8" />
+                <data android:pathPattern=".*\\.M3U8" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
